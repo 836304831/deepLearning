@@ -49,6 +49,12 @@ class DataManager(object):
         print("all_data.shape: {}, all_labels: {}".format(self.all_data.shape, self.all_labels.shape))
         return self.all_data, self.all_labels
 
+    def only_use_part_data(self, ratio):
+        valid_num = int(len(self.all_labels) * ratio)
+        self.all_data = self.all_data[0: valid_num]
+        self.all_labels = self.all_labels[0: valid_num]
+        return self.all_data, self.all_labels
+
     def filter_binary_data(self):
 
         tmp_data, tmp_label = [], []
