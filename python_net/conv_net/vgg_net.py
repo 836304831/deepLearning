@@ -36,8 +36,8 @@ conv2_2 = tf.layers.conv2d(conv2_1, 32, [3, 3], [1, 1], padding="same", activati
 max_pooling2 = tf.layers.max_pooling2d(conv2_2, [2, 2], [2, 2], name="max_pooling2")
 
 conv3_1 = tf.layers.conv2d(max_pooling2, 32, [3, 3], [1, 1], padding="same", activation=tf.nn.relu, name="conv3_1")
-conv3_2 = tf.layers.conv2d(conv1_1, 32, [3, 3], [1, 1], padding="same", activation=tf.nn.relu, name="conv3_2")
-max_pooling3 = tf.layers.max_pooling2d(conv1_2, [2, 2], [2, 2], name="max_pooling3")
+conv3_2 = tf.layers.conv2d(conv3_1, 32, [3, 3], [1, 1], padding="same", activation=tf.nn.relu, name="conv3_2")
+max_pooling3 = tf.layers.max_pooling2d(conv3_2, [2, 2], [2, 2], name="max_pooling3")
 
 
 flatten = tf.layers.flatten(max_pooling3, name="flatten")
@@ -67,8 +67,8 @@ variable_init = tf.global_variables_initializer()
 batch_size = 20
 iteration = 10000
 
-"""iteration=100000, acc=61.17, time_consume: 252 (s)
-   iteration=10000, acc=67.15, time_consume: 26 (s)
+"""iteration=100000, acc=73.01, time_consume: 375 (s)
+   iteration=10000, acc=71.48, time_consume: 39 (s)
 """
 with tf.Session() as sess:
     sess.run(variable_init)
