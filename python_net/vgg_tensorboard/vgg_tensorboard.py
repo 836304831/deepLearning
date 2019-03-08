@@ -56,6 +56,25 @@ prob_y_ = tf.argmax(y_, axis=1)
 accuracy = tf.reduce_mean(tf.cast(tf.equal(prob_y_, y), tf.float32))
 
 # tensorboard summary
+def variable_summary(var, name):
+    with tf.name_scope(name):
+        mean = tf.reduce_mean(var)
+        with tf.name_scope("stddev"):
+            stddev = tf.square(tf.reduce_mean(tf.square(var - mean)))
+        tf.summary.scalar("mean", mean)
+        tf.summary.scalar("stddev", stddev)
+        tf.summary.scalar("min", tf.reduce_min(var))
+        tf.summary.scalar("max", tf.reduce_max(var))
+        tf.summary.histogram("histogram", var)
+
+
+with tf.name_scope("summary"):
+    variable_summary(conv1_1, "conv1_1")
+    variable_summary(conv1_2, "conv1_2")
+    variable_summary(conv2_1, "conv2_1")
+    variable_summary(conv2_2, "conv2_2")
+    variable_summary(conv3_1, "conv3_1")
+    variable_summary(conv3_2, "conv3_2")
 
 loss_summary = tf.summary.scalar("loss", loss)
 acc_summary = tf.summary.scalar("accuracy", accuracy)
@@ -67,8 +86,9 @@ test_summary = tf.summary.merge([loss_summary, acc_summary])
 source_image = (x_image + 1) + 127.5
 image_summary = tf.summary.image("input_image", source_image)
 
-LOG_DIR = os.path.join(WORK_DIR, "log")
 
+LOG_DIR = os.path.join(WORK_DIR, "log")
+print("log_dir:{}".format(LOG_DIR))
 train_log_path = utils.path_generate(LOG_DIR, "train")
 test_log_path = utils.path_generate(LOG_DIR, "test")
 
@@ -82,7 +102,7 @@ test_x, test_y = test_data_manager.load_data()
 variable_init = tf.global_variables_initializer()
 
 batch_size = 16
-iteration = 10000
+iteration = 1000
 
 """
     iteration=100000, acc=73.01, time_consume: 375 (s)
@@ -91,6 +111,8 @@ iteration = 10000
 with tf.Session() as sess:
     sess.run(variable_init)
     start_time = time.time()
+    print("train_log_path:{}".format(train_log_path))
+    print("test_log_path: {}".format(test_log_path))
     train_summary_writer = tf.summary.FileWriter(train_log_path, sess.graph)
     test_summary_writer = tf.summary.FileWriter(test_log_path)
 

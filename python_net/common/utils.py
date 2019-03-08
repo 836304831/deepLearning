@@ -8,5 +8,5 @@ def path_generate(root, subpath):
     if not os.path.exists(path):
         os.makedirs(path)
     if os.path.exists(path):
-        return True
-    return False
+        return path
+    return path
