@@ -28,7 +28,8 @@ x_image = tf.reshape(x, (-1, 3, 32, 32))
 x_image = tf.transpose(x_image, [0, 2, 3, 1])
 y = tf.placeholder(dtype=tf.int64, shape=[None], name="y")
 
-conv1_1 = tf.layers.conv2d(x_image, 32, [3, 3], [1, 1], padding="same", activation=tf.nn.relu, name="conv1_1")
+# trainable=False, fix conv1_1 weight, only train other layers
+conv1_1 = tf.layers.conv2d(x_image, 32, [3, 3], [1, 1], padding="same", activation=tf.nn.relu, name="conv1_1", trainable=False)
 conv1_2 = tf.layers.conv2d(conv1_1, 32, [3, 3], [1, 1], padding="same", activation=tf.nn.relu, name="conv1_2")
 max_pooling1 = tf.layers.max_pooling2d(conv1_2, [2, 2], [2, 2], name="max_pooling1")
 
@@ -116,9 +117,11 @@ save_model_step = 100
     iteration=10000, acc=71.48, time_consume: 39 (s)
 """
 with tf.Session() as sess:
-    saver = tf.train.import_meta_graph(os.path.join(model_dir, "ckp-01000.meta"))
-    saver.restore(sess, tf.train.latest_checkpoint(model_dir))
-    # sess.run(variable_init)
+    sess.run(variable_init)
+    if os.path.exists(os.path.join(model_dir, "ckp-01000.meta")):
+        saver = tf.train.import_meta_graph(os.path.join(model_dir, "ckp-01000.meta"))
+        saver.restore(sess, tf.train.latest_checkpoint(model_dir))
+
     start_time = time.time()
     print("train_log_path:{}".format(train_log_path))
     print("test_log_path: {}".format(test_log_path))
